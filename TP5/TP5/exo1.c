@@ -36,7 +36,7 @@ int main() {
 	
 	free(myTab2);
 
-
+	myTab2 = (int*)realloc(*myTab2, (TAB2SIZE + TAILLEAJOUT) * sizeof(int));
 	ajoutElementDansTableau(myTab2, TAB2SIZE, nbElts, 3);
 
 

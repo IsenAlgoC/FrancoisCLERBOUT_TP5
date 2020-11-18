@@ -41,16 +41,17 @@ int afficheTab(int* tab, int size, int nbElts) {
 
 
 
-int ajoutElementDansTableau(int** tab, int* Size, int* nbElts, int element) {
-	if (*nbElts < *Size) {                  
+int ajoutElementDansTableau(int** tab, int* size, int* nbElts, int element) {
+	if (*nbElts < *size) {
 		*(*tab + *nbElts) = element;
 		(*nbElts)++;
 		return (*nbElts);
 	}
-	int* tab2 = (int*)realloc(*tab, (*Size + TAILLEAJOUT) * sizeof(int));   
-	if (tab2 == NULL) { return(-1); }                                        
+	int* tab2 = (int*)realloc(*tab, (*size + TAILLEAJOUT) * sizeof(int));
+	if (tab2 == NULL) { return(-1); }
 	*tab = tab2;
-	*(*tab + *nbElts) = element;                                      
-	*Size += TAILLEAJOUT;                                                 
+	*(*tab + *nbElts) = element;
+	*size += TAILLEAJOUT;
 	(*nbElts)++;
 	return (*nbElts);
+}
