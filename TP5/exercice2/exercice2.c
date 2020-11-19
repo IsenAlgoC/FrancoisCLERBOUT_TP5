@@ -5,7 +5,7 @@
 
 
 
-/* Création du type tableau */
+/* Création du type TABLEAU */
 typedef struct Tableau
 {
 	int* elt;// le tableau d’entiers
@@ -25,7 +25,7 @@ TABLEAU newArray() {
 	TABLEAU tableau;
 	tableau.elt = (int*)malloc(TAILLEINITIALE * sizeof(int));
 	tableau.size = TAILLEINITIALE;
-	tableau.eltsCount = 0;
+	tableau.eltsCount;			//le nombre d'éléments dans le tableau
 	return tableau;
 }
 
@@ -38,10 +38,10 @@ int incrementArraySize(TABLEAU* tab, int incrementValue) {
 	return (tab->size);
 }
 
-/* Fonction qui insère un élément a une position donnée */
+/* Fonction qui insère un élément à une position donnée */
 int setElement(TABLEAU* tab, int pos, int element) {
 	if (pos < tab->eltsCount) {                             // si la position est déjà dans le tableau on remplace juste l'ancien contenu par élément
-		*(tab->elt + pos) = element;
+		*(tab->elt + pos-1) = element;
 		return pos;
 	}
 	int* tab2 = (int*)realloc(tab->elt, (pos + 1) * sizeof(int));     // sinon on réalloue de la mémoire pour le placer
@@ -74,14 +74,34 @@ int deleteElements(TABLEAU* tab, int startPos, int endPos) {
 	int* tab2 = (int*)malloc((tab->size - (endPos - startPos) - 1) * sizeof(int));    // on réalloue la mémoire nécessaire au traitement
 	if (tab2 == NULL) { return(-1); }
 	for (int i = 0; i <= tab->size - 1; i++) {
-		if ((i < startPos) || (i > endPos)) {
+		if ((i < startPos-1) || (i > endPos-1)) {
 			*(tab2 + j) = *(tab->elt + i);                                         //on copie chaque élément du tableau dans la copie lorsque son indice correspond aux paramètres d'entrée
 			j++;     //quand on rajoute un élément on incrémente l'indice de la copie pour la remplir au fur et à mesure
 		}
 	}
+	tab->size -= (endPos - startPos) + 1;
+	tab->eltsCount -= (endPos - startPos) + 1;
+	tab->elt = tab2;
+	return(tab->size);
 }
 
 int main() {
-	TABLEAU montableau;
-	return EXIT_SUCCESS;
+	TABLEAU tableau = newArray();
+	for (int i = 0; i <= tableau.size - 1; i++) {     //initialisation du tableau avec pour valeur l'indice (afin de bien voir les modifications)
+		*(tableau.elt + i) = i+1;
+	}
+	tableau.eltsCount = 100;
+	setElement(&tableau, 2, 9999);
+
+	//printf("La position du 9999 inséré est %d\n", pos);
+	setElement(&tableau, 45, 9999);                     // on teste l'insertion d'éléments dans la liste puis en dehors
+	displayElements(&tableau, 0, tableau.size - 1);      // ils sont bien remplacés et l'ajout en dehors fonctionne avec les "0" de comblage
+	deleteElements(&tableau, 9, 16);
+	deleteElements(&tableau, 50 - (16 - 9 + 1), 63 - (16 - 9 + 1));                  //on supprime les segments entre 10 et 25 puis 57 et 69 (inclus)
+	displayElements(&tableau, 0, tableau.size - 1);    // les segments ont bien disparu
+	printf("La taille avant realloc est %d\n", tableau.size);                      // taille avant réalloc
+	int a = incrementArraySize(&tableau, 10);
+	printf("La taille apres realloc correcte est %d\n", a);                                 // taille après réalloc correcte
+	system("pause");
+	free(tableau.elt);
 }
